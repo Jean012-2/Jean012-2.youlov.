@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Te Amo</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background-color: black;
+      font-family: sans-serif;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .teamo {
+      position: absolute;
+      color: pink;
+      font-size: 24px;
+      pointer-events: none;
+      user-select: none;
+      animation: fade 2s ease-out forwards;
+    }
+
+    @keyframes fade {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-100px); }
+    }
+
+    #musicButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: pink;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<button id="musicButton">🎵 Reproducir música</button>
+<audio id="bgMusic" loop>
+  <source src="Yung Kai - Blue(MP3_160K).mp3" type="audio/mpeg">
+  Tu navegador no soporta audio HTML5.
+</audio>
+
+<script>
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  let drops = [];
+  const message = "Te amo 💖";
+
+  for (let i = 0; i < 100; i++) {
+    drops.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      speed: 2 + Math.random() * 3,
+      size: 20 + Math.random() * 10
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "pink";
+    ctx.font = "20px Arial";
+
+    drops.forEach(d => {
+      ctx.fillText(message, d.x, d.y);
+      d.y += d.speed;
+      if (d.y > height) {
+        d.y = -50;
+        d.x = Math.random() * width;
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  window.addEventListener('resize', () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  });
+
+  function showTeAmo(x, y) {
+    const el = document.createElement("div");
+    el.className = "teamo";
+    el.textContent = "Te amo 💖";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  }
+
+  window.addEventListener("click", (e) => {
+    showTeAmo(e.clientX, e.clientY);
+  });
+
+  window.addEventListener("touchstart", (e) => {
+    for (let touch of e.touches) {
+      showTeAmo(touch.clientX, touch.clientY);
+    }
+  });
+
+  // Música
+  const music = document.getElementById("bgMusic");
+  const musicButton = document.getElementById("musicButton");
+
+  musicButton.addEventListener("click", () => {
+    if (music.paused) {
+      music.play();
+      musicButton.textContent = "⏸️ Detener música";
+    } else {
+      music.pause();
+      musicButton.textContent = "🎵 Reproducir música";
+    }
+  });
+</script>
+</body>
+</html>
